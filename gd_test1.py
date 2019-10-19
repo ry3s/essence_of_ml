@@ -2,17 +2,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 import gd
 
+
 def f(xx):
     x = xx[0]
     y = xx[1]
 
     return 5 * x**2 - 6 * x * y + 3 * y**2 + 6 * x - 6 * y
 
+
 def df(xx):
     x = xx[0]
     y = xx[1]
 
     return np.array([10 * x - 6 * y + 6, -6 * x + 6 * y - 6])
+
 
 algo = gd.GradientDescent(f, df)
 initial = np.array([1, 1])

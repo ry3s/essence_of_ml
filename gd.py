@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class GradientDescent:
     def __init__(self, f, df, alpha=0.01, eps=1e-6):
         self.f = f
