@@ -3,6 +3,9 @@ from operator import itemgetter
 
 
 class SVC:
+    def __init__(self, C=1.):
+        self.C = C
+
     def fit(self, X, y, selections=None):
         a = np.zeros(X.shape[0])
         ay = 0
@@ -13,8 +16,12 @@ class SVC:
         while True:
             ydf = y * (1 - np.dot(yx, ayx.T))
             iydf = np.c_[indices, ydf]
-            i = int(min(iydf[(y < 0) | (a > 0)], key=itemgetter(1))[0])
-            j = int(max(iydf[(y > 0) | (a > 0)], key=itemgetter(1))[0])
+            i = int(min(iydf[((a > 0) & (y > 0)) |
+                             ((a < self.C) & (y < 0))],
+                        key=itemgetter(1))[0])
+            j = int(max(iydf[((a > 0) & (y < 0)) |
+                             ((a < self.C) & (y > 0))],
+                        key=itemgetter(1))[0])
 
             if ydf[i] >= ydf[j]:
                 break
@@ -27,11 +34,16 @@ class SVC:
 
             if ai < 0:
                 ai = 0
+            elif ai > self.C:
+                ai = self.C
 
             aj = (-ai * y[i] - ay2) * y[j]
 
             if aj < 0:
                 aj = 0
+                ai = (-aj * y[j] - ay2) * y[i]
+            elif aj > self.C:
+                aj = self.C
                 ai = (-aj * y[j] - ay2) * y[i]
 
             ay += y[i] * (ai - a[i]) + y[j] * (aj - a[j])
