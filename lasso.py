@@ -2,7 +2,7 @@ import numpy as np
 
 
 def soft_thresholding(x, y):
-    return np.sign(x) * max(abs(x), - y, 0)
+    return np.sign(x) * max(abs(x) - y, 0)
 
 
 class Lasso:
